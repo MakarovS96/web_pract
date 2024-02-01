@@ -1,0 +1,4 @@
+---
+# defaults file for users
+users_user_key: ""
+users_user_name: "user"

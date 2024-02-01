@@ -1,0 +1,23 @@
+---
+# tasks file for users
+- name: Preconfig sudoers
+  ansible.builtin.copy:
+    dest: '/etc/sudoers.d/superusers'
+    mode: '644'
+    content: '%superusers ALL=(ALL) NOPASSWD:ALL'
+
+- name: Create group
+  ansible.builtin.group:
+    name: superusers
+    state: present
+
+- name: Create user
+  ansible.builtin.user:
+    name: '{{ users_user_name }}'
+    create_home: true
+    group: superusers
+
+- name: Set ssh key
+  ansible.posix.authorized_key:
+    user: user1
+    key: '{{ users_user_key }}'

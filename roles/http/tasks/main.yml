@@ -1,0 +1,28 @@
+---
+# tasks file for http
+- name: Insall nginx
+  ansible.builtin.apt:
+    name:
+      - nginx
+    state: present
+    update_cache: true
+
+- name: Copy nginx site config
+  ansible.builtin.template:
+    src: 'etc/nginx/sites-available/default.j2'
+    dest: '/etc/nginx/sites-available/default'
+    mode: '644'
+  notify:
+    - Restart nginx
+
+- name: Check site directory
+  ansible.builtin.file:
+    path: '{{ http_document_path }}'
+    state: directory
+    mode: '755'
+
+- name: Copy php file to site directory
+  ansible.builtin.copy:
+    src: 'var/www/html/index.php'
+    dest: '{{ http_document_path }}'
+    mode: '644'

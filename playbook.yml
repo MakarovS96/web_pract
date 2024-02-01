@@ -1,0 +1,31 @@
+---
+- name: Configure server & install nginx
+  hosts: testhttp
+  become: true
+  roles:
+    - role: 'roles/users'
+      vars:
+        users_user_key: "{{lookup('file', 'vault/ssh_key.pub')}}"
+        users_user_name: "user1"
+
+    - role: 'roles/http'
+      vars:
+        http_php_host: '10.0.0.4'
+  tags:
+    - http
+
+
+- name: Configure server & install php
+  hosts: testphp
+  become: true
+  roles:
+    - role: 'roles/users'
+      vars:
+        users_user_key: "{{lookup('file', 'vault/ssh_key.pub')}}"
+        users_user_name: "user1"
+
+    - role: 'roles/php'
+      vars:
+        php_host_ip: '10.0.0.4'
+  tags:
+    - php

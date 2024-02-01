@@ -1,0 +1,27 @@
+---
+# tasks file for php
+- name: Install php-fpm
+  ansible.builtin.apt:
+    name:
+      - php8.1-fpm
+    state: present
+
+- name: Copy php config
+  ansible.builtin.template:
+    src: 'etc/php/8.1/fpm/pool.d/www.conf.j2'
+    dest: '/etc/php/8.1/fpm/pool.d/www.conf'
+    mode: '644'
+  notify:
+    - Restart php
+
+- name: Check site directory
+  ansible.builtin.file:
+    path: '{{ php_document_path }}'
+    state: directory
+    mode: '755'
+
+- name: Copy php file to site directory
+  ansible.builtin.copy:
+    src: 'var/www/html/index.php'
+    dest: '{{ php_document_path }}'
+    mode: '644'
